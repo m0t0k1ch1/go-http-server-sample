@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,7 +14,7 @@ func main() {
 
 	go func() {
 		if err := app.Start(":1323"); err != nil {
-			if err == http.ErrServerClosed {
+			if errors.Is(err, http.ErrServerClosed) {
 				app.Logger.Info(err)
 			} else {
 				app.Logger.Fatal(err)
