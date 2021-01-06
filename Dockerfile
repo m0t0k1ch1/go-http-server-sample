@@ -1,9 +1,9 @@
-FROM golang:1.15-alpine as build
+FROM golang:1.15-alpine as builder
 WORKDIR /app
 COPY . .
-RUN go build -o app main.go
+RUN go build -o go-http-server-sample
 
 FROM alpine:3.12
 WORKDIR /app
-COPY --from=build /app/app /app/app
-ENTRYPOINT ["/app/app"]
+COPY --from=builder /app/go-http-server-sample ./
+ENTRYPOINT ["/app/go-http-server-sample"]
