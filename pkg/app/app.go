@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -19,11 +20,14 @@ type HandlerFunc func(env *Env, c *Context) error
 // App is the main application.
 type App struct {
 	*echo.Echo
+	starter func() error
 }
 
 // New creates an instance of App.
-func New() *App {
-	app := &App{echo.New()}
+func New(conf *Config) *App {
+	app := &App{
+		Echo: echo.New(),
+	}
 	app.Logger.SetLevel(log.INFO)
 
 	app.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -34,9 +38,15 @@ func New() *App {
 	app.Use(middleware.Logger())
 	app.Use(middleware.Recover())
 
-	env := &Env{}
+	env := &Env{
+		Config: conf,
+	}
 
 	app.GET(env, "/", Poyo)
+
+	app.starter = func() error {
+		return app.Echo.Start(fmt.Sprintf(":%d", conf.Port))
+	}
 
 	return app
 }
@@ -54,8 +64,15 @@ func (app *App) GET(env *Env, path string, h HandlerFunc, m ...echo.MiddlewareFu
 	return app.Add(env, http.MethodGet, path, h, m...)
 }
 
+// Start starts an HTTP server
+func (app *App) Start() error {
+	return app.starter()
+}
+
 // Env holds some application-level objects.
-type Env struct{}
+type Env struct {
+	Config *Config
+}
 
 // Poyo is a sample HandlerFunc
 func Poyo(env *Env, c *Context) error {

@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -11,11 +13,23 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 )
 
+const (
+	defaultConfigPath = "configs/config.json"
+)
+
 func main() {
-	app := app.New()
+	var confPath = flag.String("conf", defaultConfigPath, "path to the config file")
+	flag.Parse()
+
+	conf, err := app.LoadConfig(*confPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app := app.New(conf)
 
 	go func() {
-		if err := app.Start(":1323"); err != nil {
+		if err := app.Start(); err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
 				app.Logger.Info(err)
 			} else {
