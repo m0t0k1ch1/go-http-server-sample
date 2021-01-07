@@ -4,7 +4,7 @@ COPY . .
 RUN go build -o go-http-server-sample
 
 FROM alpine:3.12
-ARG APP_ENV="dev"
+ARG APP_ENV=dev
 ENV APP_ENV=$APP_ENV
 WORKDIR /app
 COPY --from=builder /app/go-http-server-sample ./
