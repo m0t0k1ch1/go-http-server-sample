@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	defaultConfigPath = "configs/config.json"
+	defaultConfigPath = "config.json"
 )
 
 func main() {
