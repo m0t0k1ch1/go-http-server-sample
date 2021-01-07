@@ -28,31 +28,31 @@ func New() *App {
 
 	env := &Env{}
 
-	app.GET("/", env.Poyo)
+	app.GET(env, "/", Poyo)
 
 	return app
 }
 
 // HandlerFunc is a function to serve HTTP requests.
-type HandlerFunc func(c *Context) error
+type HandlerFunc func(env *Env, c *Context) error
 
 // Add registers a new route
-func (app *App) Add(method, path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (app *App) Add(env *Env, method, path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return app.Echo.Add(method, path, func(c echo.Context) error {
 		cc := c.(*Context)
-		return h(cc)
+		return h(env, cc)
 	}, m...)
 }
 
 // GET registers a new GET route
-func (app *App) GET(path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
-	return app.Add(http.MethodGet, path, h, m...)
+func (app *App) GET(env *Env, path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	return app.Add(env, http.MethodGet, path, h, m...)
 }
 
 // Env holds some application-level objects.
 type Env struct{}
 
 // Poyo is a sample HandlerFunc
-func (env *Env) Poyo(c *Context) error {
+func Poyo(env *Env, c *Context) error {
 	return c.String(http.StatusOK, "poyopoyo")
 }
