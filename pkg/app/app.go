@@ -8,6 +8,14 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+// Context represents the context of the current HTTP request
+type Context struct {
+	echo.Context
+}
+
+// HandlerFunc is a function to serve HTTP requests.
+type HandlerFunc func(env *Env, c *Context) error
+
 // App is the main application.
 type App struct {
 	*echo.Echo
@@ -32,9 +40,6 @@ func New() *App {
 
 	return app
 }
-
-// HandlerFunc is a function to serve HTTP requests.
-type HandlerFunc func(env *Env, c *Context) error
 
 // Add registers a new route
 func (app *App) Add(env *Env, method, path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
