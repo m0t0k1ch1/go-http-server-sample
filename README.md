@@ -11,7 +11,7 @@ $ go build
 ### with Docker
 
 ``` sh
-$ docker build -t go-http-server-sample --build-arg ENV=dev .
+$ docker build -t go-http-server-sample --build-arg APP_ENV=dev .
 ```
 
 ## Run
