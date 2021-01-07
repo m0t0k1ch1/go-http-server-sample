@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"net/http"
@@ -13,8 +13,8 @@ type App struct {
 	*echo.Echo
 }
 
-// NewApp returns a new App
-func NewApp() *App {
+// New returns a new App
+func New() *App {
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
 

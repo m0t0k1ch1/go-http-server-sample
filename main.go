@@ -7,10 +7,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 )
 
 func main() {
-	app := NewApp()
+	app := app.New()
 
 	go func() {
 		if err := app.Start(":1323"); err != nil {
