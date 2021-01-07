@@ -6,14 +6,23 @@ import (
 	"os"
 )
 
+const (
+	defaultEnv = "dev"
+)
+
 // Config holds application settings.
 type Config struct {
 	Port int `json:"port"`
 }
 
-// LoadConfig loads the configuration file and creates an instance of Config
-func LoadConfig(path string) (*Config, error) {
-	file, err := os.Open(path)
+// LoadConfig loads the configuration file corresponding to APP_ENV and creates an instance of Config
+func LoadConfig() (*Config, error) {
+	env := os.Getenv("APP_ENV")
+	if len(env) == 0 {
+		env = defaultEnv
+	}
+
+	file, err := os.Open(fmt.Sprintf("configs/%s.json", env))
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}

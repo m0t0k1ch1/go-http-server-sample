@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -13,15 +12,8 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 )
 
-const (
-	defaultConfigPath = "config.json"
-)
-
 func main() {
-	var confPath = flag.String("conf", defaultConfigPath, "path to the config file")
-	flag.Parse()
-
-	conf, err := app.LoadConfig(*confPath)
+	conf, err := app.LoadConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
