@@ -8,22 +8,43 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-// App is a HTTP server
+// App is the main application.
 type App struct {
 	*echo.Echo
 }
 
-// New returns a new App
+// New creates an instance of App.
 func New() *App {
-	e := echo.New()
-	e.Logger.SetLevel(log.INFO)
+	app := &App{echo.New()}
+	app.Logger.SetLevel(log.INFO)
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	app.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			return next(&Context{c})
+		}
+	})
+	app.Use(middleware.Logger())
+	app.Use(middleware.Recover())
 
-	e.GET("/", func(c echo.Context) error {
+	app.GET("/", func(c *Context) error {
 		return c.String(http.StatusOK, "poyopoyo")
 	})
 
-	return &App{e}
+	return app
+}
+
+// HandlerFunc is a function to serve HTTP requests.
+type HandlerFunc func(c *Context) error
+
+// Add registers a new route
+func (app *App) Add(method, path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	return app.Echo.Add(method, path, func(c echo.Context) error {
+		cc := c.(*Context)
+		return h(cc)
+	}, m...)
+}
+
+// GET registers a new GET route
+func (app *App) GET(path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	return app.Add(http.MethodGet, path, h, m...)
 }
