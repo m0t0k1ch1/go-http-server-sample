@@ -54,8 +54,7 @@ func New(conf *Config) *App {
 // Add registers a new route
 func (app *App) Add(env *Env, method, path string, h HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return app.Echo.Add(method, path, func(c echo.Context) error {
-		cc := c.(*Context)
-		return h(env, cc)
+		return h(env, &Context{c})
 	}, m...)
 }
 
