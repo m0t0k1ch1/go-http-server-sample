@@ -15,7 +15,7 @@ type Config struct {
 	Port int `json:"port"`
 }
 
-// LoadConfig loads the configuration file corresponding to APP_ENV and creates an instance of Config
+// LoadConfig loads the configuration file corresponding to APP_ENV and creates an instance of Config.
 func LoadConfig() (*Config, error) {
 	env := os.Getenv("APP_ENV")
 	if len(env) == 0 {

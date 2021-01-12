@@ -41,7 +41,7 @@ func New(conf *common.Config) *App {
 	return app
 }
 
-// Add registers a new route
+// Add registers a new route.
 func (app *App) Add(env *common.Env, method, path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return app.Echo.Add(method, path, func(c echo.Context) error {
 		return h(env, &common.Context{
@@ -50,12 +50,12 @@ func (app *App) Add(env *common.Env, method, path string, h common.HandlerFunc, 
 	}, m...)
 }
 
-// GET registers a new GET route
+// GET registers a new GET route.
 func (app *App) GET(env *common.Env, path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return app.Add(env, http.MethodGet, path, h, m...)
 }
 
-// Start starts an HTTP server
+// Start starts an HTTP server.
 func (app *App) Start() error {
 	return app.starter()
 }
