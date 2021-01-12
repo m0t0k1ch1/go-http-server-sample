@@ -10,10 +10,11 @@ import (
 	"syscall"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
 )
 
 func main() {
-	conf, err := app.LoadConfig()
+	conf, err := common.LoadConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
