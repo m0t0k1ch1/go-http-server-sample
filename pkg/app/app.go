@@ -15,7 +15,7 @@ import (
 // App is the main application.
 type App struct {
 	*echo.Echo
-	starter func() error
+	env *common.Env
 }
 
 // New creates an instance of App.
@@ -28,34 +28,30 @@ func New(conf *common.Config) *App {
 	app.Use(middleware.Logger())
 	app.Use(middleware.Recover())
 
-	env := &common.Env{
+	app.env = &common.Env{
 		Config: conf,
 	}
 
-	app.GET(env, "/ping", handlers.Ping)
-
-	app.starter = func() error {
-		return app.Echo.Start(fmt.Sprintf(":%d", conf.Port))
-	}
+	app.GET("/ping", handlers.Ping)
 
 	return app
 }
 
 // Add registers a new route.
-func (app *App) Add(env *common.Env, method, path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (app *App) Add(method, path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return app.Echo.Add(method, path, func(c echo.Context) error {
-		return h(env, &common.Context{
+		return h(app.env, &common.Context{
 			Context: c,
 		})
 	}, m...)
 }
 
 // GET registers a new GET route.
-func (app *App) GET(env *common.Env, path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
-	return app.Add(env, http.MethodGet, path, h, m...)
+func (app *App) GET(path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	return app.Add(http.MethodGet, path, h, m...)
 }
 
 // Start starts an HTTP server.
 func (app *App) Start() error {
-	return app.starter()
+	return app.Echo.Start(fmt.Sprintf(":%d", app.env.Config.Port))
 }
