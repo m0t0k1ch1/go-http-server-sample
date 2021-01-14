@@ -24,12 +24,12 @@ func LoadConfig() (*Config, error) {
 
 	file, err := os.Open(fmt.Sprintf("configs/%s.json", env))
 	if err != nil {
-		return nil, fmt.Errorf("failed to load config: %w", err)
+		return nil, fmt.Errorf("failed to load the config file: %w", err)
 	}
 
 	var conf Config
 	if err := json.NewDecoder(file).Decode(&conf); err != nil {
-		return nil, fmt.Errorf("failed to load config: %w", err)
+		return nil, fmt.Errorf("failed to decode the config: %w", err)
 	}
 
 	return &conf, nil
