@@ -32,7 +32,7 @@ func New(conf *common.Config) *App {
 		Config: conf,
 	}
 
-	app.GET("/ping", handlers.Ping)
+	app.GET("/ping", handlers.HandlePing)
 
 	return app
 }
