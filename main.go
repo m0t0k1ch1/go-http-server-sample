@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
 )
@@ -19,7 +21,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	app := app.New(conf)
+	app, err := app.New(conf)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	go func() {
 		if err := app.Start(); err != nil {
