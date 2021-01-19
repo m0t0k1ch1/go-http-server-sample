@@ -1,3 +1,10 @@
 {
-  "port": 1323
+  "port": 1323,
+  "rdb": {
+    "host": "mysql",
+    "port": 3306,
+    "user": "root",
+    "password": "",
+    "name": "go_http_server_sample"
+  }
 }

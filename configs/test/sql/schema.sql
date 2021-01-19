@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS `albums` (
+  `ean` CHAR(13) NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `artist` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`ean`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

@@ -19,7 +19,7 @@ type App struct {
 }
 
 // New creates an instance of App.
-func New(conf *common.Config) *App {
+func New(conf common.Config) (*App, error) {
 	app := &App{
 		Echo: echo.New(),
 	}
@@ -28,13 +28,20 @@ func New(conf *common.Config) *App {
 	app.Use(middleware.Logger())
 	app.Use(middleware.Recover())
 
-	app.env = &common.Env{
-		Config: conf,
+	env, err := common.NewEnv(conf)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create an instance of common.Env: %w", err)
 	}
 
-	app.GET("/ping", handlers.HandlePing)
+	app.env = env
+	app.initRoutes()
 
-	return app
+	return app, nil
+}
+
+func (app *App) initRoutes() {
+	app.GET("/ping", handlers.HandlePing)
+	app.GET("/albums", handlers.HandleGetAlbums)
 }
 
 // Add registers a new route.

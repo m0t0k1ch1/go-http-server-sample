@@ -15,3 +15,9 @@ $ docker-compose build
 ``` sh
 $ docker-compose up -d
 ```
+
+## Test
+
+``` sh
+$ docker-compose exec app go test -v ./...
+```
