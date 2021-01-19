@@ -41,6 +41,7 @@ func New(conf common.Config) (*App, error) {
 
 func (app *App) initRoutes() {
 	app.GET("/ping", handlers.HandlePing)
+	app.GET("/albums", handlers.HandleGetAlbums)
 }
 
 // Add registers a new route.
