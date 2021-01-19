@@ -9,7 +9,7 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb"
 )
 
-// Album represents a row of the albums table
+// Album represents a row of the albums table.
 type Album struct {
 	EAN    string `json:"ean"`
 	Title  string `json:"title"`
