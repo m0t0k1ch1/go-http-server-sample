@@ -21,6 +21,7 @@ func FetchAlbums(ctx context.Context, exe rdb.Executer) ([]*Album, error) {
 	rows, err := exe.QueryContext(ctx, `
 		SELECT *
 		FROM albums
+		ORDER BY ean
 	`)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch all rows of the albums table: %w", err)
