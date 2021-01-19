@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/google/go-cmp v0.5.4
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/labstack/gommon v0.3.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
