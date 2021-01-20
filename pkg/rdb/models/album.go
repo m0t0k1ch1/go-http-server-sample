@@ -9,14 +9,14 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb"
 )
 
-// Album represents a row of the albums table.
+// Album represents a row in albums table.
 type Album struct {
 	EAN    string `json:"ean"`
 	Title  string `json:"title"`
 	Artist string `json:"artist"`
 }
 
-// FetchAlbums fetches all rows of the albums table.
+// FetchAlbums fetches all rows in albums table.
 func FetchAlbums(ctx context.Context, exe rdb.Executer) ([]*Album, error) {
 	rows, err := exe.QueryContext(ctx, `
 		SELECT *
