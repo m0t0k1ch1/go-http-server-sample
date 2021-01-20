@@ -24,7 +24,7 @@ func FetchAlbums(ctx context.Context, exe rdb.Executer) ([]*Album, error) {
 		ORDER BY ean
 	`)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch all rows of the albums table: %w", err)
+		return nil, fmt.Errorf("failed to fetch all rows in albums table: %w", err)
 	}
 
 	return scanAlbums(rows)
@@ -43,7 +43,7 @@ func scanAlbums(rows *sql.Rows) ([]*Album, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("failed to scan rows of the albums table: %w", err)
+		return nil, fmt.Errorf("failed to scan rows in albums table: %w", err)
 	}
 
 	return albums, nil
@@ -63,7 +63,7 @@ func scanAlbum(s rdb.Scanner) (*Album, error) {
 		return nil, nil
 
 	case err != nil:
-		return nil, fmt.Errorf("failed to scan a row of the albums table: %w", err)
+		return nil, fmt.Errorf("failed to scan a row in albums table: %w", err)
 
 	default:
 		return &album, nil

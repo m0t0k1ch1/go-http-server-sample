@@ -27,7 +27,7 @@ func LoadConfig() (Config, error) {
 
 	file, err := os.Open(fmt.Sprintf("configs/%s.json", env))
 	if err != nil {
-		return Config{}, fmt.Errorf("failed to load the config file: %w", err)
+		return Config{}, fmt.Errorf("failed to open the config file: %w", err)
 	}
 
 	var conf Config
