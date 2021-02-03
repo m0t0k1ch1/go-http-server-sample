@@ -16,7 +16,7 @@ type Album struct {
 	Artist string `json:"artist"`
 }
 
-// FetchAlbums fetches all rows in albums table.
+// FetchAlbums fetches all albums.
 func FetchAlbums(ctx context.Context, exe db.Executer) ([]*Album, error) {
 	rows, err := exe.QueryContext(ctx, `
 		SELECT *
