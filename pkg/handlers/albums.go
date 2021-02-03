@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
@@ -70,5 +71,34 @@ func HandleGetAlbum(env *common.Env, c *common.Context) error {
 
 // HandleDeleteAlbum is an HandlerFunc to delete an album by specifying EAN.
 func HandleDeleteAlbum(env *common.Env, c *common.Context) error {
-	return nil
+	ean := c.Param("ean")
+
+	ctx := context.Background()
+
+	album, err := db.FetchAlbum(ctx, env.DB, ean)
+	if err != nil {
+		return c.InternalServerError(err)
+	}
+	if album == nil {
+		return c.NotFound("album not found")
+	}
+
+	if err := db.Transact(ctx, env.DB, func(txCtx context.Context, tx *sql.Tx) error {
+		var txErr error
+
+		album, txErr = db.FetchAlbumForUpdate(txCtx, tx, ean)
+		if txErr != nil {
+			return txErr
+		}
+
+		if txErr = db.DeleteAlbum(txCtx, tx, ean); txErr != nil {
+			return txErr
+		}
+
+		return nil
+	}); err != nil {
+		return c.InternalServerError(err)
+	}
+
+	return c.SuccessWithEmpty()
 }

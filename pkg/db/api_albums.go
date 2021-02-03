@@ -35,7 +35,7 @@ func FetchAlbums(ctx context.Context, exe Executer) ([]*models.Album, error) {
 	return scanAlbums(rows)
 }
 
-// FetchAlbum fetch an album by specifying EAN.
+// FetchAlbum fetches an album by specifying EAN.
 func FetchAlbum(ctx context.Context, exe Executer, ean string) (*models.Album, error) {
 	album, err := scanAlbum(exe.QueryRowContext(ctx, `
 		SELECT *
@@ -47,6 +47,33 @@ func FetchAlbum(ctx context.Context, exe Executer, ean string) (*models.Album, e
 	}
 
 	return album, nil
+}
+
+// FetchAlbumForUpdate fetches an album for update by specifying EAN.
+func FetchAlbumForUpdate(ctx context.Context, exe Executer, ean string) (*models.Album, error) {
+	album, err := scanAlbum(exe.QueryRowContext(ctx, `
+		SELECT *
+		FROM albums
+		WHERE ean = ?
+		FOR UPDATE
+	`, ean))
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch an album for update by specifying EAN: %w", err)
+	}
+
+	return album, nil
+}
+
+// DeleteAlbum deletes an album by specifying EAN.
+func DeleteAlbum(ctx context.Context, exe Executer, ean string) error {
+	if _, err := exe.ExecContext(ctx, `
+		DELETE FROM albums
+		WHERE ean = ?
+	`, ean); err != nil {
+		return fmt.Errorf("failed to delete an album by specifying EAN: %w", err)
+	}
+
+	return nil
 }
 
 func scanAlbums(rows *sql.Rows) ([]*models.Album, error) {
