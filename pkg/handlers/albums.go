@@ -7,6 +7,7 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/validation"
 )
 
 // HandlePostAlbum is an HandlerFunc to create a new album.
@@ -56,7 +57,9 @@ func HandleGetAlbums(env *common.Env, c *common.Context) error {
 func HandleGetAlbum(env *common.Env, c *common.Context) error {
 	ean := c.Param("ean")
 
-	// TODO: validation
+	if err := validation.ValidateEAN(ean); err != nil {
+		return c.BadRequest("invalid ean")
+	}
 
 	album, err := db.FetchAlbum(context.Background(), env.DB, ean)
 	if err != nil {
@@ -72,6 +75,10 @@ func HandleGetAlbum(env *common.Env, c *common.Context) error {
 // HandleDeleteAlbum is an HandlerFunc to delete an album by specifying EAN.
 func HandleDeleteAlbum(env *common.Env, c *common.Context) error {
 	ean := c.Param("ean")
+
+	if err := validation.ValidateEAN(ean); err != nil {
+		return c.BadRequest("invalid ean")
+	}
 
 	ctx := context.Background()
 

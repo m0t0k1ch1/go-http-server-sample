@@ -2,7 +2,8 @@ package models
 
 import (
 	ov "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/go-ozzo/ozzo-validation/v4/is"
+
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/validation"
 )
 
 // Album represents a row in albums table.
@@ -15,7 +16,7 @@ type Album struct {
 // Validate validates the album.
 func (album Album) Validate() error {
 	return ov.ValidateStruct(&album,
-		ov.Field(&album.EAN, ov.Required, ov.Length(13, 13), is.Digit),
+		ov.Field(&album.EAN, ov.Required, ov.By(validation.ValidateEAN)),
 		ov.Field(&album.Title, ov.Required),
 		ov.Field(&album.Artist, ov.Required),
 	)
