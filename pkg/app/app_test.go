@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/internal/testutils"
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb/models"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db/models"
 )
 
 func TestMain(m *testing.M) {
@@ -16,10 +16,10 @@ func TestMain(m *testing.M) {
 }
 
 func TestApp(t *testing.T) {
-	rdb, truncate := testutils.SetUpRDB()
+	db, truncate := testutils.SetUpDB()
 	defer truncate()
 
-	app := NewTestApp(t, rdb)
+	app := NewTestApp(t, db)
 
 	var statusCode int
 

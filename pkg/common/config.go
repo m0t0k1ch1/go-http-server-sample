@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 )
 
 const (
@@ -14,8 +14,8 @@ const (
 
 // Config holds the settings for the main application.
 type Config struct {
-	Port int        `json:"port"`
-	RDB  rdb.Config `json:"rdb"`
+	Port int       `json:"port"`
+	DB   db.Config `json:"db"`
 }
 
 // LoadConfig loads the configuration file corresponding to APP_ENV and creates an instance of Config.

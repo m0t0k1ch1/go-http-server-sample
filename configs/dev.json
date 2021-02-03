@@ -1,6 +1,6 @@
 {
   "port": 1323,
-  "rdb": {
+  "db": {
     "host": "mysql",
     "port": 3306,
     "user": "root",

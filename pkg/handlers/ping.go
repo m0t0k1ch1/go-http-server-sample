@@ -6,7 +6,7 @@ import (
 
 // HandlePing is a sample HandlerFunc.
 func HandlePing(env *common.Env, c *common.Context) error {
-	if err := env.RDB.Ping(); err != nil {
+	if err := env.DB.Ping(); err != nil {
 		return c.InternalServerError(err)
 	}
 

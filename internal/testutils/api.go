@@ -27,20 +27,20 @@ func DoAPIRequest(t *testing.T, h http.Handler, method, path, body string, res i
 
 	resp, err := client.Do(req)
 	if err != nil {
-		t.Errorf("failed to execute the request: %s", err)
+		t.Errorf("failed to execute the request: %v", err)
 		return 0
 	}
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		t.Errorf("failed to read the response body: %s", err)
+		t.Errorf("failed to read the response body: %v", err)
 		return resp.StatusCode
 	}
 
 	if res != nil {
 		if err := json.Unmarshal(b, res); err != nil {
-			t.Errorf("failed to unmarshal the response body: %s", err)
+			t.Errorf("failed to unmarshal the response body: %v", err)
 		}
 	}
 

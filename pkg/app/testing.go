@@ -11,7 +11,7 @@ import (
 )
 
 // NewTestApp creates an instance of App for test.
-func NewTestApp(t *testing.T, rdb *sql.DB) *App {
+func NewTestApp(t *testing.T, db *sql.DB) *App {
 	app := &App{
 		Echo: echo.New(),
 	}
@@ -19,7 +19,7 @@ func NewTestApp(t *testing.T, rdb *sql.DB) *App {
 	app.Use(middleware.Recover())
 
 	app.env = &common.Env{
-		RDB: rdb,
+		DB: db,
 	}
 	app.initRoutes()
 

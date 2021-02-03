@@ -7,7 +7,7 @@ import (
 
 // Run runs the tests and returns an exit code to pass to os.Exit.
 func Run(m *testing.M) int {
-	close := InitRDB()
+	close := InitDB()
 	defer close()
 
 	ctx := context.Background()
