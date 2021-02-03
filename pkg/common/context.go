@@ -23,6 +23,11 @@ func (c *Context) SuccessWithEmpty() error {
 	return c.Success(emptyResponse{})
 }
 
+// NotFound sends an error response with status code 404.
+func (c *Context) NotFound(message string) error {
+	return echo.NewHTTPError(http.StatusNotFound, message)
+}
+
 // InternalServerError sends an error response with status code 500.
 func (c *Context) InternalServerError(err error) error {
 	c.Logger().Error(err)
