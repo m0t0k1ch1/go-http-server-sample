@@ -1,4 +1,4 @@
-package models
+package db
 
 import (
 	"context"
@@ -6,18 +6,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
 )
 
-// Album represents a row in albums table.
-type Album struct {
-	EAN    string `json:"ean"`
-	Title  string `json:"title"`
-	Artist string `json:"artist"`
-}
-
 // FetchAlbums fetches all albums.
-func FetchAlbums(ctx context.Context, exe db.Executer) ([]*Album, error) {
+func FetchAlbums(ctx context.Context, exe Executer) ([]*models.Album, error) {
 	rows, err := exe.QueryContext(ctx, `
 		SELECT *
 		FROM albums
@@ -30,10 +23,10 @@ func FetchAlbums(ctx context.Context, exe db.Executer) ([]*Album, error) {
 	return scanAlbums(rows)
 }
 
-func scanAlbums(rows *sql.Rows) ([]*Album, error) {
+func scanAlbums(rows *sql.Rows) ([]*models.Album, error) {
 	defer rows.Close()
 
-	albums := []*Album{}
+	albums := []*models.Album{}
 	for rows.Next() {
 		album, err := scanAlbum(rows)
 		if err != nil {
@@ -49,8 +42,8 @@ func scanAlbums(rows *sql.Rows) ([]*Album, error) {
 	return albums, nil
 }
 
-func scanAlbum(s db.Scanner) (*Album, error) {
-	var album Album
+func scanAlbum(s Scanner) (*models.Album, error) {
+	var album models.Album
 
 	err := s.Scan(
 		&album.EAN,

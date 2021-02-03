@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/internal/testutils"
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db/models"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
 )
 
 func TestMain(m *testing.M) {
