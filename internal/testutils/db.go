@@ -8,7 +8,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 )
 
 const (
@@ -23,9 +23,9 @@ var (
 	dbConn *sql.DB
 )
 
-// InitRDB connects the RDB and returns the function to close the connection.
-func InitRDB() func() {
-	conf := rdb.Config{
+// InitDB connects the DB and returns the function to close the connection.
+func InitDB() func() {
+	conf := db.Config{
 		Host:     dbHost,
 		Port:     dbPort,
 		User:     dbUser,
@@ -35,7 +35,7 @@ func InitRDB() func() {
 
 	db, err := sql.Open("mysql", conf.DSN())
 	if err != nil {
-		log.Fatalf("failed to connect to the RDB: %s", err)
+		log.Fatalf("failed to connect to the DB: %s", err)
 	}
 
 	dbConn = db
@@ -45,10 +45,10 @@ func InitRDB() func() {
 	}
 }
 
-// SetUpRDB inserts test data to the RDB. It returns the RDB connection and the function to truncate tables.
-func SetUpRDB() (*sql.DB, func()) {
+// SetUpDB inserts test data to the DB. It returns the DB connection and the function to truncate tables.
+func SetUpDB() (*sql.DB, func()) {
 	if dbConn == nil {
-		log.Fatal("RDB connection not initialized")
+		log.Fatal("DB connection not initialized")
 	}
 
 	ctx := context.Background()
@@ -71,7 +71,7 @@ func setUpFixtures(ctx context.Context) {
 func executeSQLScript(ctx context.Context, path string) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatalf("failed to read %s: %s", path, err)
+		log.Fatalf("failed to read %s: %v", path, err)
 	}
 
 	queries := strings.Split(string(b), ";")
@@ -81,7 +81,7 @@ func executeSQLScript(ctx context.Context, path string) {
 			continue
 		}
 		if _, err := dbConn.ExecContext(ctx, query); err != nil {
-			log.Fatalf("failed to execute query: %s", err)
+			log.Fatalf("failed to execute query: %v", err)
 		}
 	}
 }
@@ -89,21 +89,21 @@ func executeSQLScript(ctx context.Context, path string) {
 func truncateTables(ctx context.Context) {
 	rows, err := dbConn.QueryContext(ctx, "SHOW TABLES")
 	if err != nil {
-		log.Fatalf("failed to show tables: %s", err)
+		log.Fatalf("failed to show tables: %v", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var tableName string
 		if err := rows.Scan(&tableName); err != nil {
-			log.Fatalf("failed to scan table: %s", err)
+			log.Fatalf("failed to scan table: %v", err)
 		}
 		if _, err := dbConn.ExecContext(ctx, fmt.Sprintf("TRUNCATE %s", tableName)); err != nil {
-			log.Fatalf("failed to truncate %s: %s", tableName, err)
+			log.Fatalf("failed to truncate %s: %v", tableName, err)
 		}
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Fatalf("failed to scan tables: %s", err)
+		log.Fatalf("failed to scan tables: %v", err)
 	}
 }

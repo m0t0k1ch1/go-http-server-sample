@@ -9,7 +9,7 @@ import (
 
 // HandleGetAlbums is an HandlerFunc to get all albums.
 func HandleGetAlbums(env *common.Env, c *common.Context) error {
-	albums, err := models.FetchAlbums(context.Background(), env.RDB)
+	albums, err := models.FetchAlbums(context.Background(), env.DB)
 	if err != nil {
 		return c.InternalServerError(err)
 	}

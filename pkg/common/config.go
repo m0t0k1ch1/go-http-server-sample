@@ -14,8 +14,8 @@ const (
 
 // Config holds the settings for the main application.
 type Config struct {
-	Port int        `json:"port"`
-	RDB  rdb.Config `json:"rdb"`
+	Port int       `json:"port"`
+	DB   db.Config `json:"db"`
 }
 
 // LoadConfig loads the configuration file corresponding to APP_ENV and creates an instance of Config.

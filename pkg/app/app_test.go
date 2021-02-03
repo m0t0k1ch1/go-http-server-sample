@@ -16,10 +16,10 @@ func TestMain(m *testing.M) {
 }
 
 func TestApp(t *testing.T) {
-	rdb, truncate := testutils.SetUpRDB()
+	db, truncate := testutils.SetUpDB()
 	defer truncate()
 
-	app := NewTestApp(t, rdb)
+	app := NewTestApp(t, db)
 
 	var statusCode int
 
