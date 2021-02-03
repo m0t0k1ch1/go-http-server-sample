@@ -9,6 +9,18 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
 )
 
+// CreateAlbum creates a new album.
+func CreateAlbum(ctx context.Context, exe Executer, album *models.Album) error {
+	if _, err := exe.ExecContext(ctx, `
+		INSERT INTO albums (ean, title, artist)
+		VALUES (?, ?, ?)
+	`, album.EAN, album.Title, album.Artist); err != nil {
+		return fmt.Errorf("failed to create an album: %w", err)
+	}
+
+	return nil
+}
+
 // FetchAlbums fetches all albums.
 func FetchAlbums(ctx context.Context, exe Executer) ([]*models.Album, error) {
 	rows, err := exe.QueryContext(ctx, `
