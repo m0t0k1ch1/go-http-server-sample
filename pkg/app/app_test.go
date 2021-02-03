@@ -23,6 +23,9 @@ func TestApp(t *testing.T) {
 
 	var statusCode int
 
+	var album models.Album
+	var albums []models.Album
+
 	// GET /ping
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/ping", "", nil)
 	if statusCode != http.StatusOK {
@@ -30,17 +33,110 @@ func TestApp(t *testing.T) {
 	}
 
 	// GET /albums
-	var albums []models.Album
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
 	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, acttual: %d", http.StatusOK, statusCode)
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+	if len(albums) > 0 {
+		t.Errorf("expected: %d, actual: %d", 0, len(albums))
+	}
+
+	// POST /albums
+	testutils.DoAPIRequest(t, app, http.MethodPost, "/albums", `{
+		"ean":    "4995879601242",
+		"title":  "GREEN",
+		"artist": "SEEDA"
+	}`, &album)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+	if diff := cmp.Diff(album, models.Album{
+		EAN:    "4995879601242",
+		Title:  "GREEN",
+		Artist: "SEEDA",
+	}); diff != "" {
+		t.Errorf("diff: %s", diff)
+	}
+
+	// POST /albums
+	testutils.DoAPIRequest(t, app, http.MethodPost, "/albums", `{
+		"ean":    "4997184881425",
+		"title":  "modal soul",
+		"artist": "Nujabes"
+	}`, &album)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+	if diff := cmp.Diff(album, models.Album{
+		EAN:    "4997184881425",
+		Title:  "modal soul",
+		Artist: "Nujabes",
+	}); diff != "" {
+		t.Errorf("diff: %s", diff)
+	}
+
+	// GET /albums
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
 	}
 	if diff := cmp.Diff(albums, []models.Album{
-		{EAN: "4988002758807", Title: "Juice", Artist: "iri"},
-		{EAN: "4988005553027", Title: "This Is The One", Artist: "Utada"},
-		{EAN: "4988008803235", Title: "MADRUGADA / TIGER EYES", Artist: "Jazztronik"},
-		{EAN: "4995879601242", Title: "GREEN", Artist: "SEEDA"},
-		{EAN: "4997184881425", Title: "modal soul", Artist: "Nujabes"},
+		{
+			EAN:    "4995879601242",
+			Title:  "GREEN",
+			Artist: "SEEDA",
+		}, {
+			EAN:    "4997184881425",
+			Title:  "modal soul",
+			Artist: "Nujabes",
+		},
+	}); diff != "" {
+		t.Errorf("diff: %s", diff)
+	}
+
+	// GET /albums/4995879601242
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4995879601242", "", &album)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+	if diff := cmp.Diff(album, models.Album{
+		EAN:    "4995879601242",
+		Title:  "GREEN",
+		Artist: "SEEDA",
+	}); diff != "" {
+		t.Errorf("diff: %s", diff)
+	}
+
+	// GET /albums/4997184881425
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4997184881425", "", &album)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+	if diff := cmp.Diff(album, models.Album{
+		EAN:    "4997184881425",
+		Title:  "modal soul",
+		Artist: "Nujabes",
+	}); diff != "" {
+		t.Errorf("diff: %s", diff)
+	}
+
+	// DELETE /albums/4995879601242
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodDelete, "/albums/4995879601242", "", nil)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+
+	// GET /albums
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
+	if statusCode != http.StatusOK {
+		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
+	}
+	if diff := cmp.Diff(albums, []models.Album{
+		{
+			EAN:    "4997184881425",
+			Title:  "modal soul",
+			Artist: "Nujabes",
+		},
 	}); diff != "" {
 		t.Errorf("diff: %s", diff)
 	}
