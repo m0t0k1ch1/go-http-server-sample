@@ -1,4 +1,4 @@
-package rdb
+package db
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ const (
 	location  = "Asia/Tokyo"
 )
 
-// Config holds the settings for connecting to the RDB.
+// Config holds the settings for connecting to the DB.
 type Config struct {
 	Host     string `json:"host"`
 	Port     int    `json:"port"`

@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 )
 
 // Album represents a row in albums table.
@@ -17,14 +17,14 @@ type Album struct {
 }
 
 // FetchAlbums fetches all rows in albums table.
-func FetchAlbums(ctx context.Context, exe rdb.Executer) ([]*Album, error) {
+func FetchAlbums(ctx context.Context, exe db.Executer) ([]*Album, error) {
 	rows, err := exe.QueryContext(ctx, `
 		SELECT *
 		FROM albums
 		ORDER BY ean
 	`)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch all rows in albums table: %w", err)
+		return nil, fmt.Errorf("failed to fetch the albums: %w", err)
 	}
 
 	return scanAlbums(rows)
@@ -43,13 +43,13 @@ func scanAlbums(rows *sql.Rows) ([]*Album, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("failed to scan rows in albums table: %w", err)
+		return nil, fmt.Errorf("failed to scan album rows: %w", err)
 	}
 
 	return albums, nil
 }
 
-func scanAlbum(s rdb.Scanner) (*Album, error) {
+func scanAlbum(s db.Scanner) (*Album, error) {
 	var album Album
 
 	err := s.Scan(
@@ -63,7 +63,7 @@ func scanAlbum(s rdb.Scanner) (*Album, error) {
 		return nil, nil
 
 	case err != nil:
-		return nil, fmt.Errorf("failed to scan a row in albums table: %w", err)
+		return nil, fmt.Errorf("failed to scan an album row: %w", err)
 
 	default:
 		return &album, nil

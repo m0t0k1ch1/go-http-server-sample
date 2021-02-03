@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb/models"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db/models"
 )
 
 // HandleGetAlbums is an HandlerFunc to get all albums.

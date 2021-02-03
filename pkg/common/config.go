@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/rdb"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 )
 
 const (
