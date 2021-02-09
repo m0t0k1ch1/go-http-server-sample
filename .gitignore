@@ -1,3 +1,4 @@
 /.vscode/
 /go-http-server-sample
 /tmp/
+/venv/
