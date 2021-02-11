@@ -3,7 +3,24 @@ package db
 import (
 	"context"
 	"database/sql"
+	"fmt"
 )
+
+// QueryParams holds parameters to build queries.
+type QueryParams map[string]interface{}
+
+// QueryPartsAndArgs returns the query parts and their arguments.
+func (params QueryParams) QueryPartsAndArgs() ([]string, []interface{}) {
+	parts := []string{}
+	args := []interface{}{}
+
+	for k, v := range params {
+		parts = append(parts, fmt.Sprintf("%s = ?", k))
+		args = append(args, v)
+	}
+
+	return parts, args
+}
 
 // Transact handles a transaction.
 func Transact(ctx context.Context, db *sql.DB, txFunc func(context.Context, *sql.Tx) error) (err error) {

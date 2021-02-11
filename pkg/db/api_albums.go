@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
 )
@@ -62,6 +63,22 @@ func FetchAlbumForUpdate(ctx context.Context, exe Executer, ean string) (*models
 	}
 
 	return album, nil
+}
+
+// UpdateAlbum updates an album by specifying EAN.
+func UpdateAlbum(ctx context.Context, exe Executer, ean string, params QueryParams) error {
+	queryParts, queryArgs := params.QueryPartsAndArgs()
+	queryArgs = append(queryArgs, ean)
+
+	if _, err := exe.ExecContext(ctx, fmt.Sprintf(`
+		UPDATE albums
+		SET %s
+		WHERE ean = ?
+	`, strings.Join(queryParts, ", ")), queryArgs...); err != nil {
+		return fmt.Errorf("failed to update an album by specifying EAN: %w", err)
+	}
+
+	return nil
 }
 
 // DeleteAlbum deletes an album by specifying EAN.
