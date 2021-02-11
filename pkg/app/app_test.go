@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/google/go-cmp/cmp"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/internal/testutils"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
@@ -28,35 +27,25 @@ func TestApp(t *testing.T) {
 
 	// GET /ping
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/ping", "", nil)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
+	testutils.Equal(t, statusCode, http.StatusOK)
 
 	// GET /albums
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if len(albums) > 0 {
-		t.Errorf("expected: %d, actual: %d", 0, len(albums))
-	}
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, albums, []models.Album{})
 
 	// POST /albums
 	testutils.DoAPIRequest(t, app, http.MethodPost, "/albums", `{
 		"ean":    "4995879601242",
 		"title":  "GREEN",
-		"artist": "SEEDA"
+		"artist": "YOSEEDA"
 	}`, &album)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if diff := cmp.Diff(album, models.Album{
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, album, models.Album{
 		EAN:    "4995879601242",
 		Title:  "GREEN",
-		Artist: "SEEDA",
-	}); diff != "" {
-		t.Errorf("diff: %s", diff)
-	}
+		Artist: "YOSEEDA",
+	})
 
 	// POST /albums
 	testutils.DoAPIRequest(t, app, http.MethodPost, "/albums", `{
@@ -64,80 +53,73 @@ func TestApp(t *testing.T) {
 		"title":  "modal soul",
 		"artist": "Nujabes"
 	}`, &album)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if diff := cmp.Diff(album, models.Album{
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, album, models.Album{
 		EAN:    "4997184881425",
 		Title:  "modal soul",
 		Artist: "Nujabes",
-	}); diff != "" {
-		t.Errorf("diff: %s", diff)
-	}
+	})
 
 	// GET /albums
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if diff := cmp.Diff(albums, []models.Album{
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, albums, []models.Album{
 		{
 			EAN:    "4995879601242",
 			Title:  "GREEN",
-			Artist: "SEEDA",
+			Artist: "YOSEEDA",
 		}, {
 			EAN:    "4997184881425",
 			Title:  "modal soul",
 			Artist: "Nujabes",
 		},
-	}); diff != "" {
-		t.Errorf("diff: %s", diff)
-	}
+	})
 
 	// GET /albums/4995879601242
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4995879601242", "", &album)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if diff := cmp.Diff(album, models.Album{
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, album, models.Album{
 		EAN:    "4995879601242",
 		Title:  "GREEN",
-		Artist: "SEEDA",
-	}); diff != "" {
-		t.Errorf("diff: %s", diff)
-	}
+		Artist: "YOSEEDA",
+	})
 
 	// GET /albums/4997184881425
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4997184881425", "", &album)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if diff := cmp.Diff(album, models.Album{
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, album, models.Album{
 		EAN:    "4997184881425",
 		Title:  "modal soul",
 		Artist: "Nujabes",
-	}); diff != "" {
-		t.Errorf("diff: %s", diff)
-	}
+	})
+
+	// PATCH /albums/4995879601242
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodPatch, "/albums/4995879601242", `{
+		"artist": "SEEDA"
+	}`, nil)
+	testutils.Equal(t, statusCode, http.StatusOK)
+
+	// GET /albums/4995879601242
+	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4995879601242", "", &album)
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, album, models.Album{
+		EAN:    "4995879601242",
+		Title:  "GREEN",
+		Artist: "SEEDA",
+	})
 
 	// DELETE /albums/4995879601242
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodDelete, "/albums/4995879601242", "", nil)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
+	testutils.Equal(t, statusCode, http.StatusOK)
 
 	// GET /albums
 	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
-	if statusCode != http.StatusOK {
-		t.Errorf("expected: %d, actual: %d", http.StatusOK, statusCode)
-	}
-	if diff := cmp.Diff(albums, []models.Album{
+	testutils.Equal(t, statusCode, http.StatusOK)
+	testutils.Equal(t, albums, []models.Album{
 		{
 			EAN:    "4997184881425",
 			Title:  "modal soul",
 			Artist: "Nujabes",
 		},
-	}); diff != "" {
-		t.Errorf("diff: %s", diff)
-	}
+	})
 }
