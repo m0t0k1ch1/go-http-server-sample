@@ -15,8 +15,13 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.15
+      - name: Build
+        run: docker-compose build
       - name: Test
-        run: go test -v -covermode=count -coverprofile=coverage.out ./...
+        run: |
+          docker-compose up -d
+          docker-compose exec -T app /app/scripts/wait-for-it.sh localhost:1323 -t 30 -- go test -v -covermode=count -coverprofile=coverage.out ./...
+          docker cp `docker-compose ps -q app`:/app/coverage.out ./
       - name: Convert coverage to lcov
         uses: jandelgado/gcov2lcov-action@v1.0.8
       - name: Coveralls
