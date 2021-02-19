@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	ov "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/m0t0k1ch1/go-envparser"
 )
 
@@ -15,7 +16,7 @@ const (
 // Config for connecting to the DB.
 type Config struct {
 	Host     string `json:"host"`
-	Port     int    `json:"port"`
+	Port     uint16 `json:"port"`
 	User     string `json:"user"`
 	Password string `json:"password"`
 	Name     string `json:"name"`
@@ -53,5 +54,15 @@ func (conf Config) DSN() string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?%s",
 		conf.User, conf.Password, conf.Host, conf.Port, conf.Name, q.Encode(),
+	)
+}
+
+// Validate validates the config.
+func (conf Config) Validate() error {
+	return ov.ValidateStruct(&conf,
+		ov.Field(&conf.Host, ov.Required),
+		ov.Field(&conf.Port, ov.Required),
+		ov.Field(&conf.User, ov.Required),
+		ov.Field(&conf.Name, ov.Required),
 	)
 }

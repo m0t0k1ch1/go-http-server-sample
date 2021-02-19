@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	ov "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/m0t0k1ch1/go-envparser"
+
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 )
 
@@ -15,7 +17,7 @@ const (
 
 // Config for the main application.
 type Config struct {
-	Port int       `json:"port"`
+	Port uint16    `json:"port"`
 	DB   db.Config `json:"db"`
 }
 
@@ -58,4 +60,12 @@ func LoadConfigFromEnv() (Config, error) {
 	conf.DB = dbConf
 
 	return conf, nil
+}
+
+// Validate validates the config.
+func (conf Config) Validate() error {
+	return ov.ValidateStruct(&conf,
+		ov.Field(&conf.Port, ov.Required),
+		ov.Field(&conf.DB, ov.Required),
+	)
 }

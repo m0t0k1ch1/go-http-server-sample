@@ -24,6 +24,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if err := conf.Validate(); err != nil {
+		log.Fatalf("invalid config: %v", err)
+	}
 
 	app, err := app.New(conf)
 	if err != nil {
