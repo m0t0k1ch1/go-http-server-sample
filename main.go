@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -16,9 +17,15 @@ import (
 )
 
 func main() {
-	conf, err := common.LoadConfig()
+	var confPath = flag.String("conf", "", "the path to the config file")
+	flag.Parse()
+
+	conf, err := common.LoadConfig(*confPath)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if err := conf.Validate(); err != nil {
+		log.Fatalf("invalid config: %v", err)
 	}
 
 	app, err := app.New(conf)
