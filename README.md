@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/m0t0k1ch1/go-http-server-sample.svg)](https://pkg.go.dev/github.com/m0t0k1ch1/go-http-server-sample)
 [![Documentation Status](https://readthedocs.org/projects/go-http-server-sample/badge/?version=latest)](https://go-http-server-sample.readthedocs.io/en/latest/?badge=latest)
-![test](https://github.com/m0t0k1ch1/go-http-server-sample/workflows/test/badge.svg)
+[![Test](https://github.com/m0t0k1ch1/go-http-server-sample/actions/workflows/test.yml/badge.svg)](https://github.com/m0t0k1ch1/go-http-server-sample/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/m0t0k1ch1/go-http-server-sample/badge.svg?branch=main)](https://coveralls.io/github/m0t0k1ch1/go-http-server-sample?branch=main)
 
 a sample HTTP server built with [Echo](https://github.com/labstack/echo)
