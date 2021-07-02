@@ -9,12 +9,9 @@ services:
     volumes:
       - ./:/app/
     environment:
-      APP_PORT: 1323
       APP_DB_HOST: mysql
-      APP_DB_PORT: 3306
       APP_DB_USER: root
       APP_DB_PASSWORD: ""
-      APP_DB_NAME: go_http_server_sample
     entrypoint:
       ["/app/scripts/wait-for-it.sh", "mysql:3306", "-t", "60", "--", "air"]
     depends_on:

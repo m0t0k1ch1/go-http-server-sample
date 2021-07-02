@@ -16,8 +16,11 @@ import (
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/server"
 )
 
+var (
+	confPath = flag.String("conf", "configs/config", "the path to the config file")
+)
+
 func main() {
-	var confPath = flag.String("conf", "", "the path to the config file")
 	flag.Parse()
 
 	conf, err := app.LoadConfig(*confPath)
