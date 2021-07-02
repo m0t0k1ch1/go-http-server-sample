@@ -1,4 +1,4 @@
-package app
+package server
 
 import (
 	"net/http"
@@ -14,11 +14,11 @@ func TestMain(m *testing.M) {
 	testutils.Run(m)
 }
 
-func TestApp(t *testing.T) {
+func TestServer(t *testing.T) {
 	db, truncate := testutils.SetUpDB()
 	defer truncate()
 
-	app := NewTestApp(t, db)
+	s := NewTestServer(t, db)
 
 	var statusCode int
 
@@ -26,16 +26,16 @@ func TestApp(t *testing.T) {
 	var albums []models.Album
 
 	// GET /ping
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/ping", "", nil)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/ping", "", nil)
 	testutils.Equal(t, statusCode, http.StatusOK)
 
 	// GET /albums
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/albums", "", &albums)
 	testutils.Equal(t, statusCode, http.StatusOK)
 	testutils.Equal(t, albums, []models.Album{})
 
 	// POST /albums
-	testutils.DoAPIRequest(t, app, http.MethodPost, "/albums", `{
+	testutils.DoAPIRequest(t, s, http.MethodPost, "/albums", `{
 		"ean":    "4995879601242",
 		"title":  "GREEN",
 		"artist": "YOSEEDA"
@@ -48,7 +48,7 @@ func TestApp(t *testing.T) {
 	})
 
 	// POST /albums
-	testutils.DoAPIRequest(t, app, http.MethodPost, "/albums", `{
+	testutils.DoAPIRequest(t, s, http.MethodPost, "/albums", `{
 		"ean":    "4997184881425",
 		"title":  "modal soul",
 		"artist": "Nujabes"
@@ -61,7 +61,7 @@ func TestApp(t *testing.T) {
 	})
 
 	// GET /albums
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/albums", "", &albums)
 	testutils.Equal(t, statusCode, http.StatusOK)
 	testutils.Equal(t, albums, []models.Album{
 		{
@@ -76,7 +76,7 @@ func TestApp(t *testing.T) {
 	})
 
 	// GET /albums/4995879601242
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4995879601242", "", &album)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/albums/4995879601242", "", &album)
 	testutils.Equal(t, statusCode, http.StatusOK)
 	testutils.Equal(t, album, models.Album{
 		EAN:    "4995879601242",
@@ -85,7 +85,7 @@ func TestApp(t *testing.T) {
 	})
 
 	// GET /albums/4997184881425
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4997184881425", "", &album)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/albums/4997184881425", "", &album)
 	testutils.Equal(t, statusCode, http.StatusOK)
 	testutils.Equal(t, album, models.Album{
 		EAN:    "4997184881425",
@@ -94,13 +94,13 @@ func TestApp(t *testing.T) {
 	})
 
 	// PATCH /albums/4995879601242
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodPatch, "/albums/4995879601242", `{
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodPatch, "/albums/4995879601242", `{
 		"artist": "SEEDA"
 	}`, nil)
 	testutils.Equal(t, statusCode, http.StatusOK)
 
 	// GET /albums/4995879601242
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums/4995879601242", "", &album)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/albums/4995879601242", "", &album)
 	testutils.Equal(t, statusCode, http.StatusOK)
 	testutils.Equal(t, album, models.Album{
 		EAN:    "4995879601242",
@@ -109,11 +109,11 @@ func TestApp(t *testing.T) {
 	})
 
 	// DELETE /albums/4995879601242
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodDelete, "/albums/4995879601242", "", nil)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodDelete, "/albums/4995879601242", "", nil)
 	testutils.Equal(t, statusCode, http.StatusOK)
 
 	// GET /albums
-	statusCode = testutils.DoAPIRequest(t, app, http.MethodGet, "/albums", "", &albums)
+	statusCode = testutils.DoAPIRequest(t, s, http.MethodGet, "/albums", "", &albums)
 	testutils.Equal(t, statusCode, http.StatusOK)
 	testutils.Equal(t, albums, []models.Album{
 		{
