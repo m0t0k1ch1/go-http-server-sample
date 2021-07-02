@@ -8,5 +8,6 @@ RUN go get -u github.com/cosmtrek/air
 FROM alpine:3.14
 WORKDIR /app
 RUN apk update && apk add --no-cache tzdata
-COPY --from=builder /app/go-http-server-sample ./
+COPY --from=builder /app/go-http-server-sample .
+COPY ./configs/config ./configs/config
 ENTRYPOINT ["/app/go-http-server-sample"]
