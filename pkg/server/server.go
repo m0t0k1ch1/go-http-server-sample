@@ -20,9 +20,14 @@ type Server struct {
 
 // New creates an instance of Server.
 func New(conf common.Config) (*Server, error) {
+	e := echo.New()
+	e.HideBanner = true
+	e.HidePort = true
+
 	s := &Server{
-		Echo: echo.New(),
+		Echo: e,
 	}
+
 	s.Logger.SetLevel(log.INFO)
 
 	s.Use(middleware.Logger())
