@@ -61,11 +61,11 @@ func SetUpDB() (*sql.DB, func()) {
 }
 
 func createTablesIfNotExist(ctx context.Context) {
-	executeSQLScript(ctx, "../../configs/test/sql/schema.sql")
+	executeSQLScript(ctx, "../../configs/sql/schema.sql")
 }
 
 func setUpFixtures(ctx context.Context) {
-	executeSQLScript(ctx, "../../configs/test/sql/fixture.sql")
+	executeSQLScript(ctx, "../../configs/sql/fixture.sql")
 }
 
 func executeSQLScript(ctx context.Context, path string) {
