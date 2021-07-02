@@ -8,18 +8,18 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/handlers"
 )
 
 // Server is the main application server.
 type Server struct {
 	*echo.Echo
-	env *common.Env
+	env *app.Env
 }
 
 // New creates an instance of Server.
-func New(conf common.Config) (*Server, error) {
+func New(conf app.Config) (*Server, error) {
 	e := echo.New()
 	e.HideBanner = true
 	e.HidePort = true
@@ -33,9 +33,9 @@ func New(conf common.Config) (*Server, error) {
 	s.Use(middleware.Logger())
 	s.Use(middleware.Recover())
 
-	env, err := common.NewEnv(conf)
+	env, err := app.NewEnv(conf)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create an instance of common.Env: %w", err)
+		return nil, fmt.Errorf("failed to create an instance of app.Env: %w", err)
 	}
 
 	s.env = env
@@ -54,31 +54,31 @@ func (s *Server) initRoutes() {
 }
 
 // Add registers a new route.
-func (s *Server) Add(method, path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (s *Server) Add(method, path string, h app.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return s.Echo.Add(method, path, func(c echo.Context) error {
-		return h(s.env, &common.Context{
+		return h(s.env, &app.Context{
 			Context: c,
 		})
 	}, m...)
 }
 
 // POST registers a new POST route.
-func (s *Server) POST(path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (s *Server) POST(path string, h app.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return s.Add(http.MethodPost, path, h, m...)
 }
 
 // GET registers a new GET route.
-func (s *Server) GET(path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (s *Server) GET(path string, h app.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return s.Add(http.MethodGet, path, h, m...)
 }
 
 // PATCH registers a new PATCH route.
-func (s *Server) PATCH(path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (s *Server) PATCH(path string, h app.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return s.Add(http.MethodPatch, path, h, m...)
 }
 
 // DELETE registers a new DELETE route.
-func (s *Server) DELETE(path string, h common.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+func (s *Server) DELETE(path string, h app.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return s.Add(http.MethodDelete, path, h, m...)
 }
 

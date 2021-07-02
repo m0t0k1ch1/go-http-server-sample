@@ -12,7 +12,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/server"
 )
 
@@ -20,7 +20,7 @@ func main() {
 	var confPath = flag.String("conf", "", "the path to the config file")
 	flag.Parse()
 
-	conf, err := common.LoadConfig(*confPath)
+	conf, err := app.LoadConfig(*confPath)
 	if err != nil {
 		log.Fatal(err)
 	}

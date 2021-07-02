@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/handlers/requests"
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/models"
@@ -12,7 +12,7 @@ import (
 )
 
 // HandlePostAlbum is an HandlerFunc to create a new album.
-func HandlePostAlbum(env *common.Env, c *common.Context) error {
+func HandlePostAlbum(env *app.Env, c *app.Context) error {
 	var req models.Album
 	if err := c.Bind(&req); err != nil {
 		return c.BadRequest("invalid json format")
@@ -45,7 +45,7 @@ func HandlePostAlbum(env *common.Env, c *common.Context) error {
 }
 
 // HandleGetAlbums is an HandlerFunc to fetch all albums.
-func HandleGetAlbums(env *common.Env, c *common.Context) error {
+func HandleGetAlbums(env *app.Env, c *app.Context) error {
 	albums, err := db.FetchAlbums(context.Background(), env.DB)
 	if err != nil {
 		return c.InternalServerError(err)
@@ -55,7 +55,7 @@ func HandleGetAlbums(env *common.Env, c *common.Context) error {
 }
 
 // HandleGetAlbum is an HandlerFunc to fetch an album by specifying EAN.
-func HandleGetAlbum(env *common.Env, c *common.Context) error {
+func HandleGetAlbum(env *app.Env, c *app.Context) error {
 	ean := c.Param("ean")
 	if err := v.ValidateEAN(ean); err != nil {
 		return c.BadRequest("invalid ean")
@@ -73,7 +73,7 @@ func HandleGetAlbum(env *common.Env, c *common.Context) error {
 }
 
 // HandlePatchAlbum is an HandlerFunc to patch an album by specifying EAN.
-func HandlePatchAlbum(env *common.Env, c *common.Context) error {
+func HandlePatchAlbum(env *app.Env, c *app.Context) error {
 	ean := c.Param("ean")
 	if err := v.ValidateEAN(ean); err != nil {
 		return c.BadRequest("invalid ean")
@@ -134,7 +134,7 @@ func HandlePatchAlbum(env *common.Env, c *common.Context) error {
 }
 
 // HandleDeleteAlbum is an HandlerFunc to delete an album by specifying EAN.
-func HandleDeleteAlbum(env *common.Env, c *common.Context) error {
+func HandleDeleteAlbum(env *app.Env, c *app.Context) error {
 	ean := c.Param("ean")
 	if err := v.ValidateEAN(ean); err != nil {
 		return c.BadRequest("invalid ean")

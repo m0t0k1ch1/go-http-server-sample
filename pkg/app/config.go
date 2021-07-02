@@ -1,4 +1,4 @@
-package common
+package app
 
 import (
 	"encoding/json"
@@ -9,10 +9,6 @@ import (
 	"github.com/m0t0k1ch1/go-envparser"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/db"
-)
-
-const (
-	defaultEnv = "dev"
 )
 
 // Config for the main application.
