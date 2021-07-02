@@ -13,14 +13,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/m0t0k1ch1/go-http-server-sample/pkg/app"
-	"github.com/m0t0k1ch1/go-http-server-sample/pkg/common"
+	"github.com/m0t0k1ch1/go-http-server-sample/pkg/server"
+)
+
+var (
+	confPath = flag.String("conf", "configs/config", "the path to the config file")
 )
 
 func main() {
-	var confPath = flag.String("conf", "", "the path to the config file")
 	flag.Parse()
 
-	conf, err := common.LoadConfig(*confPath)
+	conf, err := app.LoadConfig(*confPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,17 +31,17 @@ func main() {
 		log.Fatalf("invalid config: %v", err)
 	}
 
-	app, err := app.New(conf)
+	s, err := server.New(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	go func() {
-		if err := app.Start(); err != nil {
+		if err := s.Start(); err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
-				app.Logger.Info(err)
+				s.Logger.Info(err)
 			} else {
-				app.Logger.Fatal(err)
+				s.Logger.Fatal(err)
 			}
 		}
 	}()
@@ -50,9 +53,9 @@ func main() {
 		if sig != syscall.SIGTERM {
 			continue
 		}
-		app.Logger.Info("received SIGTERM")
-		if err := app.Shutdown(context.Background()); err != nil {
-			app.Logger.Fatal(err)
+		s.Logger.Info("received SIGTERM")
+		if err := s.Shutdown(context.Background()); err != nil {
+			s.Logger.Fatal(err)
 		}
 		return
 	}

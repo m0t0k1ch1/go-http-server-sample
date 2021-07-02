@@ -1,0 +1,10 @@
+{
+  "port": {{ env `APP_PORT` `1323` }},
+  "db": {
+    "host": "{{ must_env `APP_DB_HOST` }}",
+    "port": {{ env `APP_DB_PORT` `3306` }},
+    "user": "{{ must_env `APP_DB_USER` }}",
+    "password": "{{ must_env `APP_DB_PASSWORD` }}",
+    "name": "{{ env `APP_DB_NAME` `go_http_server_sample` }}"
+  }
+}
